@@ -1,0 +1,6 @@
+[submodule "eos"]
+	path = eos
+	url = https://github.com/EOSIO/eos.git
+[submodule "fibjs"]
+	path = fibjs
+	url = https://github.com/fibjs/fibjs.git
