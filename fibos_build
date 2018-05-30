@@ -1,3 +1,104 @@
+#!/bin/bash
+
+usage()
+{
+	echo ""
+	echo "Usage: `basename $0` [options] [-jn] [-v] [-h]"
+	echo "Options:"
+	echo "  release, debug: "
+	echo "      Specifies the build type."
+	echo "  clean: "
+	echo "      Clean the build folder."
+	echo "  -h, --help:"
+	echo "      Print this message and exit."
+	echo ""
+	exit 0
+}
+
+HOST_OS=`uname`
+HOST_ARCH=`uname -m`
+
+case ${HOST_ARCH} in
+	i386|i686) HOST_ARCH="i386"
+		;;
+	x86_64|amd64) HOST_ARCH="amd64"
+		;;
+	armv6|armv7|armv7s|armv7l) HOST_ARCH="arm"
+		;;
+	aarch64) HOST_ARCH="arm64"
+		;;
+	mips|mipsel) HOST_ARCH="mips"
+		;;
+	mips64) HOST_ARCH="mips64"
+		;;
+	powerpc) HOST_ARCH="ppc"
+		;;
+	ppc64) HOST_ARCH="ppc64"
+		;;
+esac
+
+TARGET_OS=$HOST_OS
+TARGET_ARCH=$HOST_ARCH
+BUILD_TYPE="release"
+
+for i in "$@"
+do
+	case $i in
+		release|debug|clean) BUILD_TYPE=$i
+			;;
+			ci) CI="ci"
+			;;
+		-j*) ENABLE_JOBS=1; BUILD_JOBS="${i#-j}"
+			;;
+        --help|-h) usage
+			;;
+		  *) echo "illegal option $i"
+			usage
+			;;
+	esac
+done
+
+if [ "$ENABLE_JOBS" = "1" -a "$BUILD_JOBS" = "" ]; then
+	#get cpu core count 
+	CPU_CORE=1
+	case ${HOST_OS} in
+		Darwin)
+			CPU_CORE=$(sysctl hw.ncpu | awk '{print $2}')
+			;;
+		Linux)
+			CPU_CORE=$(cat /proc/cpuinfo | grep processor | wc -l)
+			;;
+		Windows)
+			CPU_CORE=$(echo $NUMBER_OF_PROCESSORS)
+			;;
+	esac
+	echo "host machine has ${CPU_CORE} core"
+
+	if [ "$CPU_CORE" = "1" ]; then
+		BUILD_JOBS=""
+	else
+		# set build jobs with cpu core count
+		BUILD_JOBS=${CPU_CORE}
+	fi
+fi
+
+FIBOS_PATH=`pwd`
+OUT_PATH=${FIBOS_PATH}/out
+BIN_ROOT=${FIBOS_PATH}/bin
+BIN_PATH=${FIBOS_PATH}/bin/${TARGET_OS}_${TARGET_ARCH}_${BUILD_TYPE}
+
+if [ ${BUILD_TYPE} = 'clean' ]; then
+	if [ -e "${OUT_PATH}" ]; then
+		rm -rf ${OUT_PATH}
+	fi
+
+	if [ -e "${BIN_ROOT}" ]; then
+		rm -rf ${BIN_ROOT}
+	fi
+
+	exit 0
+fi
+
 cd eos
 
 sed "s/\.git/docs/g;" eosio_build.sh | sh
@@ -5,4 +106,83 @@ sed "s/\.git/docs/g;" eosio_build.sh | sh
 
 cd ..
 cd fibjs
-sh build -j
+
+if [ ! "$BUILD_JOBS" = "" ]; then
+    sh build -j${BUILD_JOBS}
+else
+	sh build -j
+fi
+
+if [ ! -e "${OUT_PATH}" ]; then
+	mkdir "${OUT_PATH}"
+fi
+
+OUT_PATH=${OUT_PATH}/${TARGET_OS}_${TARGET_ARCH}_${BUILD_TYPE}
+if [ ! -e ${OUT_PATH} ]; then
+	mkdir ${OUT_PATH}
+fi
+
+OUT_PATH=${OUT_PATH}/program
+if [ ! -e ${OUT_PATH} ]; then
+	mkdir ${OUT_PATH}
+fi
+
+cd ${OUT_PATH}
+cmake -DBUILD_TYPE=${BUILD_TYPE} -DBUILD_OPTION="${BUILD_OPTION}" ${FIBOS_PATH} > CMake.log
+if [ $? != 0 ]; then
+	exit 1
+fi
+
+if [ ! "$BUILD_JOBS" = "" ]; then
+	sh -c "${BUILD_VERBOSE} make -j${BUILD_JOBS}"
+else
+	sh -c "${BUILD_VERBOSE} make"
+fi
+if [ $? != 0 ]; then
+	exit 1
+fi
+
+if [ "${BUILD_TYPE}" = "release" ]; then
+	cd "${BIN_PATH}"
+	cp "${FIBOS_PATH}/installer.txt" "installer.sh"
+	tar -zcf fibos.tar.gz fibos
+	echo '[100%] Built target fibos.tar.gz'
+	cat fibos.tar.gz >> installer.sh
+	chmod 777 installer.sh
+	echo '[100%] Built target install.sh'
+
+	if [ $TARGET_OS = "Linux" ]; then
+		echo ''
+		echo '==== GLIBC ===='
+		objdump fibos -p | grep GLIBC_[0-9.]* -o | sort | uniq
+	fi
+
+	if [ "${CI}" = "ci" ]; then
+		xz -cz -T2 fibos > fibos.xz
+		echo '[100%] Built target fibos.xz'
+	fi
+fi
+
+cd "${FIBOS_PATH}"
+
+txtbld=$(tput bold)
+bldred=${txtbld}$(tput setaf 1)
+txtrst=$(tput sgr0)
+
+printf "\n\n${bldred}"
+
+
+printf "\t _______ _________ ______   _______  _______\n"
+printf "\t(  ____ \\\\\\__   __/(  ___ \\ (  ___  )(  ____ \\\\\n"
+printf "\t| (    \\/   ) (   | (   ) )| (   ) || (    \\/\n"
+printf "\t| (__       | |   | (__/ / | |   | || (_____ \n"
+printf "\t|  __)      | |   |  __ (  | |   | |(_____  )\n"
+printf "\t| (         | |   | (  \\ \\ | |   | |      ) |\n"
+printf "\t| (_     ___) (___| (___) )| (___) |/\\____) |\n"
+printf "\t(__/     \\_______/(______/ (_______)\\_______)\n"
+printf "${txtrst}"
+
+printf "\\n\\tFIBOS has been successfully built.\\n\\n"
+
+printf "\\tFor more information:\\n\\n"
+printf "\\tFIBOS website: http://fibos.io\\n"

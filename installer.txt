@@ -1,0 +1,4 @@
+#!/bin/sh
+echo "This program will install fibos into /usr/local/bin."
+( read l; read l ; read l; read l; exec cat ) < "$0" | sudo tar -C /usr/local/bin/ -zxf - fibos
+exit
