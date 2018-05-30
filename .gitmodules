@@ -4,3 +4,4 @@
 [submodule "fibjs"]
 	path = fibjs
 	url = https://github.com/fibjs/fibjs.git
+	branch = dev
