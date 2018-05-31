@@ -1,4 +1,4 @@
-# JavaScript Toolbox on EOS
+# JavaScript Toolchain on EOS
 
 FIBOS is a JavaScript runtime that combines EOS and fibjs. It provides programmability to eos and allows the use of JavaScript to write smart contracts.
 
