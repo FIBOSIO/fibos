@@ -6,5 +6,6 @@ FIBOS is a JavaScript runtime that combines EOS and fibjs. It provides programma
 
 * website: https://fibos.io
 * telegram: https://t.me/FIBOSIO
+* twitter: https://twitter.com/fibos_io
 * medium: https://medium.com/@fibosio
 * issue: https://github.com/fibosio/fibos/issues
