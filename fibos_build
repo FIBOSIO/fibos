@@ -103,6 +103,9 @@ cd eos
 
 sed "s/\.git/docs/g;" eosio_build.sh | sh
 # sed "s/\.git/docs/g;s/=Release/=Debug/g" eosio_build.sh | sh
+if [ $? != 0 ]; then
+	exit 1
+fi
 
 cd ..
 cd fibjs
@@ -111,6 +114,9 @@ if [ ! "$BUILD_JOBS" = "" ]; then
     sh build -j${BUILD_JOBS}
 else
 	sh build -j
+fi
+if [ $? != 0 ]; then
+	exit 1
 fi
 
 if [ ! -e "${OUT_PATH}" ]; then
