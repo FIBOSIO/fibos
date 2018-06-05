@@ -8,6 +8,30 @@
 #include "fibjs.h"
 #include "object.h"
 
+#include <appbase/application.hpp>
+
+#include <eosio/chain_plugin/chain_plugin.hpp>
+#include <eosio/http_plugin/http_plugin.hpp>
+#include <eosio/history_plugin.hpp>
+#include <eosio/net_plugin/net_plugin.hpp>
+#include <eosio/producer_plugin/producer_plugin.hpp>
+#include <eosio/utilities/common.hpp>
+
+#include <fc/log/logger_config.hpp>
+#include <fc/log/appender.hpp>
+#include <fc/exception/exception.hpp>
+
+#include <boost/dll/runtime_symbol_info.hpp>
+#include <boost/exception/diagnostic_information.hpp>
+
+using namespace appbase;
+using namespace eosio;
+using namespace fibjs;
+
+namespace fc {
+std::unordered_map<std::string, appender::ptr>& get_appender_map();
+}
+
 namespace fibjs {
 
 void importModule()
@@ -55,56 +79,15 @@ void importModule()
     IMPORT_MODULE(zip);
     IMPORT_MODULE(zlib);
     IMPORT_MODULE(zmq);
-
-#ifdef _WIN32
-    IMPORT_MODULE(gui);
-    IMPORT_MODULE(registry);
-#endif
+}
 }
 
-void main(int32_t argc, char** argv)
+int32_t main(int32_t argc, char* argv[])
 {
     importModule();
 
     start(argc, argv, main_fiber);
     run_gui();
-}
-}
 
-#ifdef _WIN32
-
-#ifdef _CONSOLE
-int32_t main()
-#else
-int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
-#endif
-{
-    int32_t argc;
-    char** argv;
-
-    LPWSTR* szArglist = CommandLineToArgvW(GetCommandLineW(), &argc);
-    std::vector<exlib::string> strArgList;
-    std::vector<char*> ptrArgList;
-    int32_t i;
-
-    strArgList.resize(argc);
-    ptrArgList.resize(argc);
-    for (i = 0; i < argc; i++) {
-        strArgList[i] = fibjs::utf16to8String(szArglist[i]);
-        ptrArgList[i] = strArgList[i].c_buffer();
-    }
-
-    argv = ptrArgList.data();
-
-    fibjs::main(argc, argv);
     return 0;
 }
-
-#else
-
-int32_t main(int32_t argc, char* argv[])
-{
-    fibjs::main(argc, argv);
-    return 0;
-}
-#endif
