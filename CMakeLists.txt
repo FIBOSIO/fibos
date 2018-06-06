@@ -102,15 +102,22 @@ include_directories("${EOS_DIR}/libraries/softfloat/source/include")
 
 if (APPLE)
 	set(OPENSSL_ROOT_DIR "/usr/local/opt/openssl")
-	set(OPENSSL_INCLUDE_DIR "/usr/local/opt/openssl/include")
 elseif(UNIX AND NOT APPLE)
 	set(OPENSSL_ROOT_DIR "/usr/include/openssl")
-	set(OPENSSL_INCLUDE_DIR "/usr/include/openssl/include")
 else()
 	message(FATAL_ERROR "openssl not found and don't know where to look, please specify OPENSSL_ROOT_DIR")
 endif()
 
-include_directories("${OPENSSL_INCLUDE_DIR}")
+include_directories("${OPENSSL_ROOT_DIR}/include")
+
+file(GLOB_RECURSE eos_alist "eos/*.a")
+target_link_libraries(${appname} ${eos_alist})
+
+link_directories(${LLVM_LIBRARY_DIR})
+file(GLOB openssl_alist "${OPENSSL_ROOT_DIR}/lib/*.a")
+target_link_libraries(${appname} ${openssl_alist})
+
+target_link_libraries(${appname} llvm boost_iostreams boost_date_time boost_chrono boost_program_options boost_filesystem boost_system secp256k1)
 
 set(libs fibjs expat gumbo gd tiff jpeg png webp zlib leveldb snappy ev pcre sqlite mongo umysql uuid exif mbedtls v8 zmq unzip editline exlib)
 

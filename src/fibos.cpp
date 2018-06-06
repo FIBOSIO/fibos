@@ -26,14 +26,12 @@
 
 using namespace appbase;
 using namespace eosio;
-using namespace fibjs;
 
 namespace fc {
 std::unordered_map<std::string, appender::ptr>& get_appender_map();
 }
 
 namespace fibjs {
-
 void importModule()
 {
     IMPORT_MODULE(assert);
@@ -84,10 +82,12 @@ void importModule()
 
 int32_t main(int32_t argc, char* argv[])
 {
-    importModule();
+    fibjs::importModule();
 
-    start(argc, argv, main_fiber);
-    run_gui();
+    fibjs::start(argc, argv, fibjs::main_fiber);
+    fibjs::run_gui();
+
+    app().register_plugin<history_plugin>();
 
     return 0;
 }
