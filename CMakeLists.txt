@@ -113,11 +113,14 @@ include_directories("${OPENSSL_ROOT_DIR}/include")
 file(GLOB_RECURSE eos_alist "eos/*.a")
 target_link_libraries(${appname} ${eos_alist})
 
-link_directories(${LLVM_LIBRARY_DIR})
+find_package(LLVM 4.0 REQUIRED CONFIG)
+llvm_map_components_to_libnames(LLVM_LIBS support core passes mcjit native DebugInfoDWARF)
+target_link_libraries(${appname} ${LLVM_LIBS})
+
 file(GLOB openssl_alist "${OPENSSL_ROOT_DIR}/lib/*.a")
 target_link_libraries(${appname} ${openssl_alist})
 
-target_link_libraries(${appname} llvm boost_iostreams boost_date_time boost_chrono boost_program_options boost_filesystem boost_system secp256k1)
+target_link_libraries(${appname} boost_iostreams boost_date_time boost_chrono boost_program_options boost_filesystem boost_system secp256k1)
 
 set(libs fibjs expat gumbo gd tiff jpeg png webp zlib leveldb snappy ev pcre sqlite mongo umysql uuid exif mbedtls v8 zmq unzip editline exlib)
 
