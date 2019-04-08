@@ -1,0 +1,261 @@
+/*! @brief console 对象 
+控制台访问对象
+
+全局对象。可用于提示信息，警告和错误记录。通过启动配置文件，可将日志定位到不同的设备，以便于跟踪。 */
+
+module bc_console {
+    /*! @brief loglevel 级别常量 */
+    const FATAL = 0;
+
+    /*! @brief loglevel 级别常量 */
+    const ALERT = 1;
+
+    /*! @brief loglevel 级别常量 */
+    const CRIT = 2;
+
+    /*! @brief loglevel 级别常量 */
+    const ERROR = 3;
+
+    /*! @brief loglevel 级别常量 */
+    const WARN = 4;
+
+    /*! @brief loglevel 级别常量 */
+    const NOTICE = 5;
+
+    /*! @brief loglevel 级别常量 */
+    const INFO = 6;
+
+    /*! @brief loglevel 级别常量 */
+    const DEBUG = 7;
+
+    /*! @brief loglevel 仅用于输出，信息输出后不换行，file 和 syslog 不保存此级别信息 */
+    const PRINT = 9;
+
+    /*! @brief loglevel 级别常量 */
+    const NOTSET = 10;
+
+    /*! @brief 记录普通日志信息，与 info 等同
+    实例：
+    ```JavaScript
+        exports.hi = v => {
+            console.log('hello :%s',"FIBOS")
+        };
+    ``` 
+     记录一般等级的日志信息。通常用于输出非错误性提示信息。
+     @param fmt 格式化字符串
+     @param args 可选参数列表
+     */
+    static log(String fmt, ...args);
+
+    /*! @brief 记录普通日志信息，与 info 等同
+    ```JavaScript
+        exports.hi = v => {
+            console.log('hello FIBOS')
+        };
+    ``` 
+
+     记录一般等级的日志信息。通常用于输出非错误性提示信息。
+     @param args 可选参数列表
+     */
+    static log(...args);
+
+    /*! @brief 记录调试日志信息
+    ```JavaScript
+        exports.hi = v => {
+            console.debug('warn %s','FIBOS')
+        };
+    ``` 
+
+     记录调试日志信息。通常用于输出调试信息。不重要。
+     @param fmt 格式化字符串
+     @param args 可选参数列表
+     */
+    static debug(String fmt, ...args);
+
+    /*! @brief 记录调试日志信息
+    ```JavaScript
+        exports.hi = v => {
+            console.debug('warn FIBOS')
+        };
+    ``` 
+
+     记录调试日志信息。通常用于输出调试信息。不重要。
+     @param args 可选参数列表
+     */
+    static debug(...args);
+
+    /*! @brief 记录普通日志信息，与 log 等同
+    ```JavaScript
+        exports.hi = v => {
+            console.info('hello :%s','FIBOS')
+        };
+    ``` 
+
+     记录一般等级的日志信息。通常用于输出非错误性提示信息。
+     @param fmt 格式化字符串
+     @param args 可选参数列表
+     */
+    static info(String fmt, ...args);
+
+    /*! @brief 记录普通日志信息，与 log 等同
+    ```JavaScript
+        exports.hi = v => {
+            console.info('hello FIBOS')
+        };
+    ``` 
+
+     记录一般等级的日志信息。通常用于输出非错误性提示信息。
+     @param args 可选参数列表
+     */
+    static info(...args);
+
+    /*! @brief 记录警告日志信息
+    ```JavaScript
+        exports.hi = v => {
+            console.notice('hello :%s','FIBOS')
+        };
+    ``` 
+
+     记录警告日志信息。通常用于输出提示性调试信息。一般重要。
+     @param fmt 格式化字符串
+     @param args 可选参数列表
+     */
+    static notice(String fmt, ...args);
+
+    /*! @brief 记录警告日志信息
+    ```JavaScript
+        exports.hi = v => {
+            console.notice('hello FIBOS')
+        };
+    ``` 
+
+     记录警告日志信息。通常用于输出提示性调试信息。一般重要。
+     @param args 可选参数列表
+     */
+    static notice(...args);
+
+    /*! @brief 记录警告日志信息
+    ```JavaScript
+        exports.hi = v => {
+            console.warn('hello :%s','FIBOS')
+        };
+    ``` 
+
+     记录警告日志信息。通常用于输出警告性调试信息。重要。
+     @param fmt 格式化字符串
+     @param args 可选参数列表
+     */
+    static warn(String fmt, ...args);
+
+    /*! @brief 记录警告日志信息
+    ```JavaScript
+        exports.hi = v => {
+            console.warn('hello FIBOS')
+        };
+    ``` 
+
+     记录警告日志信息。通常用于输出警告性调试信息。重要。
+     @param args 可选参数列表
+     */
+    static warn(...args);
+
+    /*! @brief 记录错误日志信息
+    ```JavaScript
+        exports.hi = v => {
+            console.error('hello %s','FIBOS')
+        };
+    ``` 
+
+     记录用于错误日志信息。通常用于输出错误信息。非常重要。系统的出错信息也会以此等级记录。
+     @param fmt 格式化字符串
+     @param args 可选参数列表
+     */
+    static error(String fmt, ...args);
+
+    /*! @brief 记录错误日志信息
+    ```JavaScript
+        exports.hi = v => {
+            console.error('hello FIBOS')
+        };
+    ``` 
+
+     记录用于错误日志信息。通常用于输出错误信息。非常重要。系统的出错信息也会以此等级记录。
+     @param args 可选参数列表
+     */
+    static error(...args);
+
+    /*! @brief 记录关键错误日志信息
+
+    ```JavaScript
+        exports.hi = v => {
+            console.crit('hello %s','FIBOS')
+        };
+    ``` 
+     记录用于关键错误日志信息。通常用于输出关键错误信息。非常重要。
+     @param fmt 格式化字符串
+     @param args 可选参数列表
+     */
+    static crit(String fmt, ...args);
+
+    /*! @brief 记录关键错误日志信息
+    ```JavaScript
+        exports.hi = v => {
+            console.crit('hello FIBOS')
+        };
+    ``` 
+
+     记录用于关键错误日志信息。通常用于输出关键错误信息。非常重要。
+     @param args 可选参数列表
+     */
+    static crit(...args);
+
+    /*! @brief 记录警报错误日志信息
+    ```JavaScript
+        exports.hi = v => {
+            console.alert('hello %s','FIBOS')
+        };
+    ``` 
+    
+     记录用于警报错误日志信息。通常用于输出警报错误信息。非常重要。为最高级别信息。
+     @param fmt 格式化字符串
+     @param args 可选参数列表
+     */
+    static alert(String fmt, ...args);
+
+    /*! @brief 记录警报错误日志信息
+    ```JavaScript
+        exports.hi = v => {
+            console.alert('hello FIBOS')
+        };
+    ``` 
+
+     记录用于警报错误日志信息。通常用于输出警报错误信息。非常重要。为最高级别信息。
+     @param args 可选参数列表
+     */
+    static alert(...args);
+
+    /*! @brief 用 JSON 格式输出对象
+    ```JavaScript
+        exports.hi = v => {
+            var a = {};
+            console.dir(a);
+        };
+    ``` 
+     @param obj 给定要显示的对象
+     */
+    static dir(Value obj);
+
+    /*! @brief 输出当前调用堆栈
+
+     通过日志输出当前调用堆栈。
+     @param label 标题，缺省为空字符串。
+     */
+    static trace(String label = "trace");
+
+    /*! @brief 断言测试，如果测试值为假，则报错
+
+     @param value 测试的数值
+     @param msg 报错信息
+     */
+    static assert(Value value, String msg = "");
+};
