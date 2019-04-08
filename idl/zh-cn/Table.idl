@@ -1,0 +1,110 @@
+/*! @brief
+ multi index table 对象
+ */
+
+interface Table : object
+{
+    /*! @brief table 名
+    */
+    readonly String name;
+
+    /*! @brief 指向合约发布者的名称
+    */
+    readonly String code;
+
+    /*! @brief table 中数据所属的 account_name
+    */
+    readonly String scope;
+
+    /*! @brief 向 table 存入新数据
+  实例：
+    ```JavaScript
+        exports.hi = v => {
+            var players = db.players(action.account, action.account);
+            players.emplace(action.account, { 
+            title: "ceo",
+            age:48, 
+            nickname:"lion1",
+            id:123
+            });
+        };
+    ```    
+     @param payer 为此次操作付费的账户
+     @param val 将要存入到 table 的值
+    */
+    emplace(String payer, Object val);
+
+    /*! @brief 从 table 查找数据
+    实例:
+      ```JavaScript
+        exports.hi = v => {
+        var players = db.players(action.account, action.account);
+        console.log(players.find(v).data)
+        };
+      ```
+    @param id 查询的参数
+    */
+    DBIterator find(Value id);
+
+    /*! @brief 生成自增主键
+    实例:
+      ```JavaScript
+        exports.hi = v => {
+        var players = db.players(action.account, action.account);
+        console.log(players.get_primary_key())
+        };
+      ```
+    */
+    Value get_primary_key();
+
+    /*! @brief 获取 Table 的 begin
+    实例:
+      ```JavaScript
+        exports.hi = v => {
+        var players = db.players(action.account, action.account);
+        console.log(players.begin())
+        };
+      ```
+    */
+    DBIterator begin();
+
+    /*! @brief 获取 Table 的 end
+    实例:
+      ```JavaScript
+        exports.hi = v => {
+        var players = db.players(action.account, action.account);
+        console.log(players.end().is_end(), players.end().previous().data);
+        };
+      ```
+    */
+    DBIterator end();
+
+    /*! @brief 从 table 查找小于参数结果
+    实例:
+    ```JavaScript
+    exports.hi1 = v => {
+        var players = db.players1(action.account, action.account);
+        var data = players.lowerbound(123);
+        console.log(data.data, data1.data);
+        };
+    ```
+    @param id 查询的参数
+    */
+    DBIterator lowerbound(Value id);
+
+    /*! @brief 从 table 查找大于参数结果
+    实例:
+    ```JavaScript
+    exports.hi1 = v => {
+        var players = db.players1(action.account, action.account);
+        var data1 = players.upperbound(123);
+        console.log(data.data, data1.data);
+        };
+    ```
+    @param id 查询的参数
+    */
+    DBIterator upperbound(Value id);
+
+    /*! @brief 查询当前索引，返回所有索引对象，每个索引是一个新的 Table 对象 */
+    readonly Object indexes;
+};

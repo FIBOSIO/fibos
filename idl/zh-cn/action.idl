@@ -1,0 +1,131 @@
+/*! @brief action 对象
+  使用方法：在 fibos 的 js 合约中使用
+ ```JavaScript
+    var js_code = `exports.hi = v => console.error(action.is_account(action.account), action.is_account("notexists"));`;
+    fibos.setcodeSync(name, 0, 0, fibos.compileCode(js_code));
+ ```
+ */
+
+module action {
+    /*! @brief action 名称
+  实例：
+    ```JavaScript
+        exports.hi = v => {
+            console.log(action.name)
+        };
+    ```
+    */
+    static readonly String name;
+
+    /*! @brief action 发送者的账户名
+  实例：
+    ```JavaScript
+        exports.hi = v => {
+            console.log(action.account)
+        };
+    ```    
+    */
+    static readonly String account;
+
+    /*! @brief action 接收者
+  实例：
+    ```JavaScript
+        exports.hi = v => {
+            console.log(action.receiver)
+        };
+    ```    
+    */
+    static readonly String receiver;
+
+    /*! @brief 返回从1970年1月1日0时0分0秒（UTC，即协调世界时）距离出块时间的毫秒数。
+  实例：
+    ```JavaScript
+        exports.hi = v => {
+            console.log(action.publication_time)
+        };
+    ```    
+    */
+    static readonly Long publication_time;
+
+    /*! @brief 执行该 action 需要得到数组中所有账户的授权
+  实例：
+    ```JavaScript
+        exports.hi = v => {
+            console.log(action.authorization)
+        };
+    ```    
+    */
+    static readonly Array authorization;
+
+    /*! @brief 该 action 所在 transaction 的哈希 id
+  实例：
+    ```JavaScript
+        exports.hi = v => {
+            console.log(action.id)
+        };
+    ```    
+    */
+    static readonly String id;
+
+    /*! @brief 判断账户是否存在
+  实例：
+    ```JavaScript
+        exports.hi = v => {
+                if(action.is_account(account)) console.notice("account exists");
+            else console.error("account notexists")
+        };
+    ```
+     @param name 账户名
+     @return 账户存在则返回 true，不存在返回 false
+    */
+    static Boolean is_account(String name);
+
+    /*! @brief action 执行成后，名为 name 的账号是否会收到通知
+  实例：
+    ```JavaScript
+       exports.hi = v => {  
+            if(action.has_recipient(receiver)) console.notice("action received")
+             else console.error("action not received");
+        };
+    ```    
+     @param name 账户名
+     @return 若名为 name 的账户会收到通知则返回 true，否则返回 false
+    */
+    static Boolean has_recipient(String name);
+
+
+    /*! @brief 向通知列表增加特定账号
+  实例：
+    ```JavaScript
+        exports.hi = v => {
+            action.require_recipient(action.receiver);
+        };
+    ```    
+     @param name 账户名
+    */
+    static require_recipient(String name);
+
+    /*! @brief 验证 action 是否需要特定账户的授权
+  实例：
+    ```JavaScript
+        exports.hi = v => {
+            if(action.has_auth(account)) console.notice("action be authed") 
+        };
+    ```    
+     @param name 待验证的账号名
+     @return 需要该账户授权则返回 true，否则返回 false
+    */
+    static Boolean has_auth(String name);
+
+    /*! @brief 向 action 的授权列表中添加特定账户及对应的权限，若添加失败则会抛出异常
+  实例：
+    ```JavaScript
+        exports.hi = v => {
+            if(action.require_auth(account)) console.notice("auth success")
+        };
+    ```    
+     @param name 待验证的账号名
+     @param permission 需要该账户授权的权限
+    */
+    static require_auth(String name, String permission = "");
+};

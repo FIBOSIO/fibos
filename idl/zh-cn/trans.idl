@@ -1,0 +1,63 @@
+/*! @brief
+	trans 模块
+ */
+
+module trans {
+    /*! @brief 向特定帐号发送 inline action
+  实例：
+    ```JavaScript
+        // hi acction
+        exports.hi => (user) {
+        // 触发hi2 action
+        trans.send_inline(
+            "test", 
+            "hi2", 
+        {
+            user:"user1", 
+            friend:"user2"
+        }, 
+        [{
+            "actor": "${name}", 
+            "permission": "active"
+        }])
+    };
+
+        // hi2 action
+        exports.hi2 = (user, friend) => {
+        console.log(user, friend);
+        }
+    ```    
+     @param account action 发送者的帐号名称
+     @param name action 名称
+     @param args action 附带的数据
+     @param authorization action 的权限
+    */
+    static send_inline(String account, String name, Object args, Array authorization = []);
+
+    /*! @brief 向特定帐号发送 context_free inline action
+实例：
+    ```JavaScript
+        // hi acction
+        exports.hi => (user) {
+        // 触发hi2 action
+        trans.send_context_free_inline(
+                "test", 
+                "hi2", 
+            { 
+                user:"user1", 
+                friend:"user2" 
+            }
+        );
+    };
+
+        // hi2 action
+        exports.hi2 = (user, friend) => {
+        console.log(user, friend);
+    }
+    ```     
+     @param account action 发送者的帐号名称
+     @param name action 名称
+     @param args action 附带的数据
+    */
+    static send_context_free_inline(String account, String name, Object args);
+};
