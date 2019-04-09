@@ -100,18 +100,23 @@ if [ ${BUILD_TYPE} = 'clean' ]; then
 fi
 
 cd eos
-
 sed "s/\.git/docs/g;" eosio_build.sh | sh
 # sed "s/\.git/docs/g;s/=Release/=Debug/g" eosio_build.sh | sh
-
+if [ $? != 0 ]; then
+	exit 1
+fi
 cd ..
-cd fibjs
 
+cd fibjs
 if [ ! "$BUILD_JOBS" = "" ]; then
     sh build -j${BUILD_JOBS}
 else
 	sh build -j
 fi
+if [ $? != 0 ]; then
+	exit 1
+fi
+cd ..
 
 if [ ! -e "${OUT_PATH}" ]; then
 	mkdir "${OUT_PATH}"
@@ -170,8 +175,6 @@ bldred=${txtbld}$(tput setaf 1)
 txtrst=$(tput sgr0)
 
 printf "\n\n${bldred}"
-
-
 printf "\t _______ _________ ______   _______  _______\n"
 printf "\t(  ____ \\\\\\__   __/(  ___ \\ (  ___  )(  ____ \\\\\n"
 printf "\t| (    \\/   ) (   | (   ) )| (   ) || (    \\/\n"

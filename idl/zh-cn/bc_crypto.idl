@@ -1,0 +1,76 @@
+/*! @brief bc_crypto 模块 
+加密算法模块
+
+bc_crypto 是 FIBOS 中的加密模块，支持 SHA1 、SHA256 、SHA 512等加密算法，在 js 合约中可以直接使用。
+*/
+module bc_crypto
+{
+    /*! @brief 从给定的 hash 和签名中恢复公钥
+    实例:
+    ```JavaScript
+    exports.hi1 = sig => {
+            var r = crypto.sha256('I am alive');
+            var s = crypto.recover_key(r, sig);
+            console.notice(s);
+        }
+
+    ```
+     @param digest 指定消息的 hash 结果
+     @param signature 指定的签名
+     @return 返回恢复的公钥
+     */
+    static String recover_key(String digest, String signature);
+
+    /*! @brief 创建一个 SHA1 信息摘要运算对象
+
+    实例:
+    ```JavaScript
+    exports.hi = v => {
+            var r = crypto.sha1("abcdefg");
+            console.error(r);
+        }
+    ```
+     @param data 创建同时更新的二进制数据
+     @return 返回信息摘要结果的 hex 编码字符串
+     */
+    static String sha1(Buffer data);
+
+    /*! @brief 创建一个 SHA256 信息摘要运算对象
+    实例:
+    ```JavaScript
+    exports.hi = v => {
+            var r = crypto.sha256("abcdefg");
+            console.error(r);
+        }
+    ```
+     @param data 创建同时更新的二进制数据
+     @return 返回信息摘要结果的 hex 编码字符串
+     */
+    static String sha256(Buffer data);
+
+    /*! @brief 创建一个 SHA512 信息摘要运算对象
+    实例:
+    ```JavaScript
+    exports.hi = v => {
+            var r = crypto.sha512("abcdefg");
+            console.error(r);
+        }
+    ```
+     @param data 创建同时更新的二进制数据
+     @return 返回信息摘要结果的 hex 编码字符串
+     */
+    static String sha512(Buffer data);
+
+    /*! @brief 创建一个 RIPEMD160 信息摘要运算对象
+    实例:
+    ```JavaScript
+    exports.hi = v => {
+            var r = crypto.ripemd160("abcdefg");
+            console.error(r);
+        }
+    ```
+     @param data 创建同时更新的二进制数据
+     @return 返回信息摘要结果的 hex 编码字符串
+     */
+    static String ripemd160(Buffer data);
+};

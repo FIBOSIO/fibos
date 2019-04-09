@@ -1,0 +1,4 @@
+{
+    "FIBOS": ["fibos"],
+    "Contract": ["action", "bc_console", "bc_crypto", "bc_db", "trans"]
+}

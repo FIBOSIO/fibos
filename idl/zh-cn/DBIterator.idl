@@ -1,0 +1,86 @@
+/*! @brief
+ multi index DBIterator 对象
+ */
+
+interface DBIterator : object
+{
+    /*! @brief 判断数据是否为首数据
+    实例:
+    ```JavaScript
+    exports.hi1 = v => {
+            var players = db.players(action.account, action.account);
+            var itr = players.find(v);
+            console.log(itr.is_begin());
+            }；
+    ```
+    */
+    Boolean is_begin();
+
+    /*! @brief 判断数据是否为尾数据
+    实例:
+    ```JavaScript
+    exports.hi1 = v => {
+            var players = db.players(action.account, action.account);
+            var itr = players.find(v);
+            console.log(itr.is_end());
+            }；
+    ```
+    */
+    Boolean is_end();
+    
+    /*! @brief 获取下一个数据
+    实例:
+    ```JavaScript
+    exports.hi1 = v => {
+            var players = db.players(action.account, action.account);
+            var itr = players.find(v);
+            var itr1 = itr.next();
+            console.log(itr1.toJSON());
+            }；
+    ```
+    */
+    DBIterator next();
+
+    /*! @brief 获取上一个数据
+    实例:
+    ```JavaScript
+    exports.hi1 = v => {
+            var players = db.players(action.account, action.account);
+            var itr = players.find(v);
+            var itr1 = itr.next();
+            var itr2 = itr1.previous();
+            console.log(itr2.toJSON());
+            }；
+    ```
+    */
+    DBIterator previous();
+
+    /*! @brief 删除数据
+    实例:
+    ```JavaScript
+    exports.hi1 = v => {
+            var players = db.players(action.account, action.account);
+            var itr = players.find(v);
+            itr.remove();
+            }；
+    ```
+    */    
+    remove();
+
+    /*! @brief 更新数据
+    实例:
+    ```JavaScript
+    exports.hi1 = v => {
+            var players = db.players(action.account, action.account);
+            var itr = players.find(v);
+            itr.data.age = 18;
+            itr.update(action.account);
+            }；
+    ```
+    @param payer 为此次操作支付 RAM 的账户
+    */    
+    update(String payer);
+
+    /*! @brief 查询当前数据，返回所有数据对象，每个数据是一个新的 DBIterator 对象 */
+    readonly Object data;
+};
